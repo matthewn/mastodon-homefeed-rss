@@ -21,7 +21,7 @@ def get_client_id_and_secret(instance):
     return client_id, client_secret
 
 
-def get_authorization_page(instance, client_id):
+def get_authorization_page_url(instance, client_id):
     return f'https://{instance}/oauth/authorize?client_id={client_id}&scope=read&redirect_uri=urn:ietf:wg:oauth:2.0:oob&response_type=code'
 
 
@@ -39,7 +39,10 @@ def get_access_token(instance, client_id, client_secret, user_authz_code):
     return access_token
 
 
-def generate_feed(instance, access_token, output_file='mastodon-homefeed.xml'):
+def generate_feed(instance, access_token, output_file):
+    if output_file is None:
+        output_file = 'mastodon-homefeed.xml'
+
     headers = {
         'Authorization': f'Bearer {access_token}',
     }
@@ -52,30 +55,29 @@ def generate_feed(instance, access_token, output_file='mastodon-homefeed.xml'):
         print(f'Error received from instance: {response.json()["error"]}')
         sys.exit(1)
 
-    if statuses := response.json():
-        feed = FeedGenerator()
-        feed.id('https://mahnamahna.net/gen/mastodon-homefeed.xml')
-        feed.title('mastodon home feed')
-        for status in statuses:
-            if status['reblog']:
-                acct = status['reblog']['account']['acct']
-                url = f'https://{instance}/@{acct}/{status["id"]}'
-                content = f'[boosting {acct.split("@")[0]}] <br>{status["reblog"]["content"]}'
-            else:
-                acct = status['account']['acct']
-                url = f'https://{instance}/@{acct}/{status["id"]}'
-                content = status['content']
-            author = status['account']['display_name']
-            datetime = status['created_at']
-            title = re.sub('<[^<]+?>', '', content[:80])
-            item = feed.add_entry()
-            item.id(url)
-            item.title(title)
-            item.author({'name': author})
-            item.pubDate(datetime)
-            item.content(content)
-            item.link({'href': url})
-        feed.atom_file(output_file)
+    feed = FeedGenerator()
+    feed.id('https://mahnamahna.net/gen/mastodon-homefeed.xml')
+    feed.title('mastodon home feed')
+    statuses = response.json()
+    for status in statuses:
+        if status['reblog']:
+            acct = status['reblog']['account']['acct']
+            content = f'[boosting {acct.split("@")[0]}] <br>{status["reblog"]["content"]}'
+        else:
+            acct = status['account']['acct']
+            content = status['content']
+        url = f'https://{instance}/@{acct}/{status["id"]}'
+        author = status['account']['display_name']
+        datetime = status['created_at']
+        title = re.sub('<[^<]+?>', '', content[:80])
+        item = feed.add_entry()
+        item.id(url)
+        item.title(title)
+        item.author({'name': author})
+        item.pubDate(datetime)
+        item.content(content)
+        item.link({'href': url})
+    feed.atom_file(output_file)
 
 
 if __name__ == '__main__':
@@ -97,28 +99,22 @@ if __name__ == '__main__':
     )
     parser.add_argument(
         '--output_file',
-        help='pathname for file output (./mastodon-homefeed.xml if omitted)',
+        help='pathname for file output (mastodon-homefeed.xml if omitted)',
     )
     args = parser.parse_args()
-    instance = str(args.instance)
+    instance = args.instance
 
-    if not args.setup:
-
-        # generate a feed
-        if args.output_file:
-            generate_feed(instance, str(args.token), str(args.output_file))
-        else:
-            generate_feed(instance, str(args.token))
+    if args.token:
+        generate_feed(instance, args.token, args.output_file)
 
     else:
-
         # do the setup routine
         (client_id, client_secret) = get_client_id_and_secret(instance)
-        url = get_authorization_page(instance, client_id)
-        print('Please visit the following URL:\n')
+        url = get_authorization_page_url(instance, client_id)
+        print('Please visit the following page:\n')
         print(f'{url}\n')
         user_authz_code = input(
-            'Paste in the authorization code provided at the URL above: '
+            'Paste in the authorization code provided at the page linked above: '
         )
         access_token = get_access_token(
             instance, client_id, client_secret, user_authz_code
