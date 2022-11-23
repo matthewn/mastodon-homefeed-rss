@@ -56,7 +56,7 @@ def generate_feed(instance, access_token, output_file):
         sys.exit(1)
 
     feed = FeedGenerator()
-    feed.id('https://mahnamahna.net/gen/mastodon-homefeed.xml')
+    feed.id('https://mahnamahna.net/mastodon-homefeed-rss')
     feed.title('mastodon home feed')
     statuses = response.json()
     for status in statuses:
