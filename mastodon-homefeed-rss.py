@@ -43,9 +43,7 @@ def generate_feed(instance, access_token, output_file):
     if output_file is None:
         output_file = 'mastodon-homefeed.xml'
 
-    headers = {
-        'Authorization': f'Bearer {access_token}',
-    }
+    headers = {'Authorization': f'Bearer {access_token}'}
     response = requests.get(
         f'https://{instance}/api/v1/timelines/home',
         headers=headers,
