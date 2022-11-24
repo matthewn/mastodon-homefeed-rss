@@ -4,6 +4,7 @@ import argparse
 import re
 import requests
 import sys
+import textwrap
 
 from feedgen.feed import FeedGenerator
 
@@ -60,19 +61,25 @@ def generate_feed(instance, access_token, output_file):
     for status in statuses:
         if status['reblog']:
             acct = status['reblog']['account']['acct']
-            content = f'[boosting {acct.split("@")[0]}] <br>{status["reblog"]["content"]}'
+            content = f'[boosting {acct}] <br>{status["reblog"]["content"]}'
+            title = re.sub(
+                '<[^<]+?>',
+                '',
+                f'[boosting {acct.split("@")[0]}] {status["reblog"]["content"]}',
+            )
         else:
             acct = status['account']['acct']
             content = status['content']
+            title = re.sub('<[^<]+?>', '', content)
+        title = textwrap.shorten(title, width=80, placeholder='...')
         url = f'https://{instance}/@{acct}/{status["id"]}'
         author = status['account']['display_name']
-        datetime = status['created_at']
-        title = re.sub('<[^<]+?>', '', content[:80])
+        created = status['created_at']
         item = feed.add_entry()
         item.id(url)
         item.title(title)
         item.author({'name': author})
-        item.pubDate(datetime)
+        item.pubDate(created)
         item.content(content)
         item.link({'href': url})
     feed.atom_file(output_file)
