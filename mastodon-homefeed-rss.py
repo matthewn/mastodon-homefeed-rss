@@ -51,7 +51,10 @@ def generate_feed(instance, access_token, output_file):
     )
 
     if response.status_code != 200:
-        print(f'Error received from instance: {response.json()["error"]}')
+        try:
+            print(f'Error received from instance: {response.json()["error"]}')
+        except requests.exceptions.JSONDecodeError:
+            print(f'Error received from instance. HTTP status code: {response.status_code}')
         sys.exit(1)
 
     feed = FeedGenerator()
