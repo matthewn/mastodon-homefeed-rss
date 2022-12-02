@@ -3,6 +3,8 @@ This is a Python script that generates an RSS feed from a Mastodon user's home f
 
 It is a quick, dirty, and probably naive hack. But it is working, and when it breaks, I intend to fix it (unless a better alternative comes along). _"This is the way."_
 
+For more on why this script exists, see [my blog post about it](https://www.mahnamahna.net/blog/announcing-mastodon-homefeed-rss/).
+
 To make effective use of this script you will likely need a Linux machine where you can:
   - run a script with Python 3.8 or later, and
   - write a file to a web-accessible directory, and
