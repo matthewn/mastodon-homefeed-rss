@@ -65,16 +65,18 @@ def generate_feed(instance, access_token, output_file):
         if status['reblog']:
             acct = status['reblog']['account']['acct']
             content = f'[boosting {acct}] <br>{status["reblog"]["content"]}'
+            title = status['reblog']['content'].replace('</p><p>', ' ')
             title = re.sub(
                 '<[^<]+?>',
                 '',
-                f'[boosting {acct.split("@")[0]}] {status["reblog"]["content"]}',
+                f'[boosting {acct.split("@")[0]}] {title}',
             )
             target = status['reblog']
         else:
             acct = status['account']['acct']
             content = status['content']
-            title = re.sub('<[^<]+?>', '', content)
+            title = content.replace('</p><p>', ' ')
+            title = re.sub('<[^<]+?>', '', title)
             target = status
         if target['media_attachments']:
             for item in target['media_attachments']:
