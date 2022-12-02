@@ -70,10 +70,20 @@ def generate_feed(instance, access_token, output_file):
                 '',
                 f'[boosting {acct.split("@")[0]}] {status["reblog"]["content"]}',
             )
+            target = status['reblog']
         else:
             acct = status['account']['acct']
             content = status['content']
             title = re.sub('<[^<]+?>', '', content)
+            target = status
+        if target['media_attachments']:
+            for item in target['media_attachments']:
+                if item['type'] == 'image':
+                    alt = item['description']
+                    height = item['meta']['small']['height']
+                    url = item['preview_url']
+                    width = item['meta']['small']['width']
+                    content += f'<p><img src="{url}" height="{height}" width="{width}" alt="{alt}"></p>'
         title = textwrap.shorten(title, width=80, placeholder='...')
         url = f'https://{instance}/@{acct}/{status["id"]}'
         author = status['account']['display_name']
