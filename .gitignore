@@ -1,5 +1,6 @@
 deploy
 *.xml
+.envrc
 .python-version
 .venv/
 __pycache__/
