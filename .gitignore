@@ -1,4 +1,3 @@
-deploy
 *.xml
 .envrc
 .python-version

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mastodon-homefeed-rss"
-version = "0.5"
+version = "0.4"
 description = "generate an RSS feed from a Mastodon home feed"
 authors = ["Matthew Newton <matthewn@mahnamahna.net>"]
 
