@@ -64,6 +64,7 @@ def generate_feed(instance, access_token, output_file):
     for status in statuses:
         if status['reblog']:
             acct = status['reblog']['account']['acct']
+            status_id = status['reblog']['id']
             content = f'[boosting {acct}] <br>{status["reblog"]["content"]}'
             title = status['reblog']['content'].replace('</p><p>', ' ')
             title = re.sub(
@@ -74,6 +75,7 @@ def generate_feed(instance, access_token, output_file):
             target = status['reblog']
         else:
             acct = status['account']['acct']
+            status_id = status['id']
             content = status['content']
             title = content.replace('</p><p>', ' ')
             title = re.sub('<[^<]+?>', '', title)
@@ -87,7 +89,7 @@ def generate_feed(instance, access_token, output_file):
                     width = item['meta']['small']['width']
                     content += f'<p><img src="{url}" height="{height}" width="{width}" alt="{alt}"></p>'
         title = textwrap.shorten(title, width=80, placeholder='...')
-        url = f'https://{instance}/@{acct}/{status["id"]}'
+        url = f'https://{instance}/@{acct}/{status_id}'
         author = status['account']['display_name']
         created = status['created_at']
         item = feed.add_entry()
