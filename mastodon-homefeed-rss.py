@@ -40,6 +40,13 @@ def get_access_token(instance, client_id, client_secret, user_authz_code):
     return access_token
 
 
+def strip_title(title):
+    title = title.replace('</p><p>', ' ')
+    title = title.replace('<br>', ' ')
+    title = re.sub('<[^<]+?>', '', title)
+    return title
+
+
 def generate_feed(instance, access_token, output_file):
     if output_file is None:
         output_file = 'mastodon-homefeed.xml'
@@ -66,19 +73,15 @@ def generate_feed(instance, access_token, output_file):
             acct = status['reblog']['account']['acct']
             status_id = status['reblog']['id']
             content = f'[boosting {acct}] <br>{status["reblog"]["content"]}'
-            title = status['reblog']['content'].replace('</p><p>', ' ')
-            title = re.sub(
-                '<[^<]+?>',
-                '',
-                f'[boosting {acct.split("@")[0]}] {title}',
+            title = strip_title(
+                f'[{acct.split("@")[0]}] {status["reblog"]["content"]})'
             )
             target = status['reblog']
         else:
             acct = status['account']['acct']
             status_id = status['id']
             content = status['content']
-            title = content.replace('</p><p>', ' ')
-            title = re.sub('<[^<]+?>', '', title)
+            title = strip_title(content)
             target = status
         if target['media_attachments']:
             for item in target['media_attachments']:
