@@ -74,7 +74,7 @@ def generate_feed(instance, access_token, output_file):
             status_id = status['reblog']['id']
             content = f'[boosting {acct}] <br>{status["reblog"]["content"]}'
             title = strip_title(
-                f'[{acct.split("@")[0]}] {status["reblog"]["content"]})'
+                f'[{acct.split("@")[0]}] {status["reblog"]["content"]}'
             )
             target = status['reblog']
         else:
