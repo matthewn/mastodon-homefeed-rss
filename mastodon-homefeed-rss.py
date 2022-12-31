@@ -42,7 +42,7 @@ def get_access_token(instance, client_id, client_secret, user_authz_code):
 
 def strip_title(title):
     title = title.replace('</p><p>', ' ')
-    title = title.replace('<br>', ' ')
+    title = re.sub(r'<br ?/?>', ' ', title)
     title = re.sub('<[^<]+?>', '', title)
     return title
 
