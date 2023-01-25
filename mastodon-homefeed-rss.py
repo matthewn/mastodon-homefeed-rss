@@ -92,6 +92,8 @@ def generate_feed(instance, access_token, output_file):
                     width = item['meta']['small']['width']
                     content += f'<p><img src="{url}" height="{height}" width="{width}" alt="{alt}"></p>'
         title = textwrap.shorten(title, width=80, placeholder='...')
+        if title == '':
+            title = '(no title)'
         url = f'https://{instance}/@{acct}/{status_id}'
         author = status['account']['display_name']
         created = status['created_at']
