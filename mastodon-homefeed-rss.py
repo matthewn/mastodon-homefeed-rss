@@ -5,8 +5,14 @@ import re
 import requests
 import sys
 import textwrap
+import unicodedata
 
 from feedgen.feed import FeedGenerator
+
+
+def remove_control_characters(s):
+    # taken from https://stackoverflow.com/a/19016117
+    return "".join(ch for ch in s if unicodedata.category(ch)[0] != "C")
 
 
 def get_client_id_and_secret(instance):
@@ -102,7 +108,7 @@ def generate_feed(instance, access_token, output_file):
         item.title(title)
         item.author({'name': author})
         item.pubDate(created)
-        item.content(content)
+        item.content(remove_control_characters(content))
         item.link({'href': url})
     feed.atom_file(output_file)
 
