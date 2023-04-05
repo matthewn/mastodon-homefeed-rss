@@ -97,6 +97,12 @@ def generate_feed(instance, access_token, output_file):
                     url = item['preview_url']
                     width = item['meta']['small']['width']
                     content += f'<p><img src="{url}" height="{height}" width="{width}" alt="{alt}"></p>'
+        if target['poll']:
+            content += (
+                '<ul><li>'
+                + '<li>'.join([d['title'] for d in status['poll']['options']])
+                + '</ul>'
+            )
         title = textwrap.shorten(title, width=80, placeholder='...')
         if title == '':
             title = '(no title)'
