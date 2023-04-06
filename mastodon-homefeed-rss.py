@@ -100,7 +100,7 @@ def generate_feed(instance, access_token, output_file):
         if target['poll']:
             content += (
                 '<ul><li>'
-                + '<li>'.join([d['title'] for d in status['poll']['options']])
+                + '<li>'.join([d['title'] for d in target['poll']['options']])
                 + '</ul>'
             )
         title = textwrap.shorten(title, width=80, placeholder='...')
