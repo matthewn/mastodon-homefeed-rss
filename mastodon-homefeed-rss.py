@@ -93,9 +93,11 @@ def generate_feed(instance, access_token, output_file):
             for item in target['media_attachments']:
                 if item['type'] == 'image':
                     alt = item['description']
-                    height = item['meta']['small']['height']
                     url = item['preview_url']
-                    width = item['meta']['small']['width']
+                    height = width = ''
+                    if item['meta']:
+                        height = item['meta']['small']['height']
+                        width = item['meta']['small']['width']
                     content += f'<p><img src="{url}" height="{height}" width="{width}" alt="{alt}"></p>'
         if target['poll']:
             content += (
