@@ -91,17 +91,21 @@ def generate_feed(instance, access_token, output_file):
             target = status
         if target['media_attachments']:
             for item in target['media_attachments']:
-                alt = item['description']
+                description = item['description']
                 height = width = ''
                 if item['meta']:
                     height = item['meta']['small']['height']
                     width = item['meta']['small']['width']
                 if item['type'] == 'image':
                     url = item['preview_url']
-                    content += f'<p><img src="{url}" height="{height}" width="{width}" alt="{alt}" title="{alt}"></p>'
+                    content += f'<p><img src="{url}" height="{height}" width="{width}" alt="{description}" title="{description}"></p>'
                 if item['type'] == 'gifv':
                     url = item['url']
-                    content += f'<video title="{alt}" role="application" src="{url}" autoplay="" playsinline="" loop=""></video>'
+                    content += f'<video title="{description}" role="application" src="{url}" autoplay="" playsinline="" loop="" height="{height}" width="{width}"></video>'
+                if item['type'] == 'video':
+                    url = item['url']
+                    poster = item['preview_url']
+                    content += f'<video title="{description}" role="button" preload="none" src="{url}" poster="{poster}" tabindex="0" height="{height}" width="{width}"></video>'
         if target['poll']:
             content += (
                 '<ul><li>'
