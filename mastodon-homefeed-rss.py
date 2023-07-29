@@ -91,14 +91,17 @@ def generate_feed(instance, access_token, output_file):
             target = status
         if target['media_attachments']:
             for item in target['media_attachments']:
+                alt = item['description']
+                height = width = ''
+                if item['meta']:
+                    height = item['meta']['small']['height']
+                    width = item['meta']['small']['width']
                 if item['type'] == 'image':
-                    alt = item['description']
                     url = item['preview_url']
-                    height = width = ''
-                    if item['meta']:
-                        height = item['meta']['small']['height']
-                        width = item['meta']['small']['width']
-                    content += f'<p><img src="{url}" height="{height}" width="{width}" alt="{alt}"></p>'
+                    content += f'<p><img src="{url}" height="{height}" width="{width}" alt="{alt}" title="{alt}"></p>'
+                if item['type'] == 'gifv':
+                    url = item['url']
+                    content += f'<video title="{alt}" role="application" src="{url}" autoplay="" playsinline="" loop=""></video>'
         if target['poll']:
             content += (
                 '<ul><li>'
@@ -130,9 +133,9 @@ if __name__ == '__main__':
         help='the domain name of your instance, e.g. mastodon.social',
     )
     mode.add_argument(
-        "--setup",
+        '--setup',
         action='store_true',
-        help="get an access token for an instance",
+        help='get an access token for an instance',
     )
     mode.add_argument(
         '--token',
