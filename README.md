@@ -8,7 +8,7 @@ For more on why this script exists, see [my blog post about it](https://www.mahn
 To make effective use of this script you will likely need a Linux machine where you can:
   - run a script with Python 3.8 or later, and
   - write a file to a web-accessible directory, and
-  - set up a cron job
+  - set up a cron job (or similar sort of scheduled task)
 
 Sure, it is also possible to run this on a Windows or Mac machine and send the generated XML file somewhere, but if you are already thinking along those lines, you sound like you're smart enough to figure out those details. I'll tell you how I use this thing.
 
@@ -20,6 +20,8 @@ Sure, it is also possible to run this on a Windows or Mac machine and send the g
 4. You can now generate an (Atom-flavored) RSS feed by doing `./mastodon-homefeed-rss.py --token <token> <instance>` where _token_ is that access token you received in the previous step. A file named _mastodon-homefeed.xml_ will be created in the current directory.
 5. If you'd like the output file to go elsewhere, you can do this: `./mastodon-homefeed-rss.py --token <token> --output_file /path/to/feed.xml <instance>`
 6. Now hook yourself up with a cron job that runs the script with the options you need at the interval you desire.
+  - If you are a `poetry` user, the command your job should run will be something like: `cd /home/user/bin/mastodon-homefeed-rss && poetry run ./mastodon-homefeed-rss.py <instance> --token <token> --output_file <file>`, with the appropriate values plugged in.
+  - Otherwise, to get the script to run inside its virtual environment, do something like: `/home/user/bin/mastodon-homefeed-rss/.venv/bin/python /home/user/bin/mastodon-homefeed-rss/mastodon-homefeed-rss.py <instance> --token <token> --output_file <file>`
 
 Oh yeah, one additional wrinkle, back at step 3. If the access token you receive starts with a dash/hyphen character, that's not gonna work due to a bug in Python's argparse module that is [not going to be fixed](https://github.com/python/cpython/issues/53580) (!). So in this case, just do step 3 again to get a different token.
 
