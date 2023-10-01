@@ -105,7 +105,7 @@ def generate_feed(instance, access_token, output_file):
                 if item['type'] == 'video':
                     url = item['url']
                     poster = item['preview_url']
-                    content += f'<video title="{description}" role="button" preload="none" src="{url}" poster="{poster}" tabindex="0" height="{height}" width="{width}"></video>'
+                    content += f'<video title="{description}" controls role="button" preload="none" src="{url}" poster="{poster}" tabindex="0" height="{height}" width="{width}"></video>'
         if target['poll']:
             content += (
                 '<ul><li>'
