@@ -93,9 +93,10 @@ def generate_feed(instance, access_token, output_file):
             for item in target['media_attachments']:
                 description = item['description']
                 height = width = ''
-                if item['meta']:
-                    height = item['meta']['small']['height']
-                    width = item['meta']['small']['width']
+                if item.get('meta'):
+                    if item['meta'].get('small'):
+                        height = item['meta']['small']['height']
+                        width = item['meta']['small']['width']
                 if item['type'] == 'image':
                     url = item['preview_url']
                     content += f'<p><img src="{url}" height="{height}" width="{width}" alt="{description}" title="{description}"></p>'
