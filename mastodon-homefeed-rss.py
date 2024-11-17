@@ -76,18 +76,21 @@ def generate_feed(instance, access_token, output_file):
     statuses = response.json()
     for status in statuses:
         if status['reblog']:
+            booster = status['account']['acct']
             acct = status['reblog']['account']['acct']
             status_id = status['reblog']['id']
             content = f'[boosting {acct}] <br>{status["reblog"]["content"]}'
             title = strip_title(
-                f'[{acct.split("@")[0]}] {status["reblog"]["content"]}'
+                f'{booster.split("@")[0]} / {acct.split("@")[0]}:&nbsp; {status["reblog"]["content"]}'
             )
             target = status['reblog']
         else:
             acct = status['account']['acct']
             status_id = status['id']
             content = status['content']
-            title = strip_title(content)
+            title = strip_title(
+                f'{acct.split("@")[0]}:&nbsp; {content}'
+            )
             target = status
         if target['media_attachments']:
             for item in target['media_attachments']:
