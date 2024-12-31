@@ -116,7 +116,7 @@ def generate_feed(instance, access_token, output_file):
                 + '<li>'.join([d['title'] for d in target['poll']['options']])
                 + '</ul>'
             )
-        title = textwrap.shorten(title, width=80, placeholder='...')
+        title = textwrap.shorten(title, width=120, placeholder='...')
         if title == '':
             title = '(no title)'
         url = f'https://{instance}/@{acct}/{status_id}'
