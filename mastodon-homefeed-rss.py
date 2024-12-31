@@ -127,7 +127,7 @@ def generate_feed(instance, access_token, output_file):
         item.title(title)
         item.author({'name': author})
         item.pubDate(created)
-        item.content(remove_control_characters(content))
+        item.content(content=remove_control_characters(content), type='html')
         item.link({'href': url})
     feed.atom_file(output_file)
 
